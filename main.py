@@ -86,7 +86,7 @@ class Application(tk.Frame):
     if self.reset == True:
       self.current = value
     elif "." in self.result["text"]:
-      if len(self.result["text"]) == 12:
+      if len(self.result["text"][self.result["text"].find(".")+ 1 :]) == 6:
         return
       self.current += (int(value) * (10 ** ( -1 * len(self.result["text"][self.result["text"].find("."):]))))
       print(len(self.result["text"][self.result["text"].find("."):]))
@@ -95,7 +95,10 @@ class Application(tk.Frame):
     self.result["text"] = '''{:8f}'''.format(self.current).rstrip("0").rstrip(".")
   
   def set_current(self, value):
-    self.current = value
+    if self.reset == True:
+      self.current = value
+    else:
+      self.current = value if self.current == 0 else value * self.current
     self.result["text"] = '''{:8f}'''.format(self.current).rstrip('0').rstrip(".")
 
   def clear(self):
@@ -127,9 +130,7 @@ class Application(tk.Frame):
       self.stored = self.current
     except ZeroDivisionError:
       self.current = 0
-    except TypeError:
-      self.current = self.stored * self.current
-      self.stored = self.current
+
     finally:
       self.func = None
       self.result["text"] = '''{:8f}'''.format(self.current).rstrip("0").rstrip(".")
